@@ -6,7 +6,7 @@ ENV \
 	TERRAFORM_VERSION=0.11.11 \
 	SUMMON_PROVIDER=/usr/local/bin/summon-gopass
 
-RUN yum -y install unzip wget && \
+RUN yum -y install git unzip wget && \
 	yum clean all && \
 	rm -rf /var/cache/yum
 
