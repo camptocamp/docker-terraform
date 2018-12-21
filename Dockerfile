@@ -8,6 +8,7 @@ ENV \
 
 RUN apt-get update && apt-get install -y \
 	git \
+	gpg \
 	unzip \
 	wget \
 	&& rm -rf /var/lib/apt/lists/*
