@@ -1,0 +1,18 @@
+---
+image:
+  name: docker
+
+stages:
+  - build
+  - push
+
+build_image:
+  stage: build
+  script:
+    - docker build -t mcanevet/terraform:latest .
+
+push_image:
+  stage: push
+  script:
+    - docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
+    - docker push mcanevet/terraform:latest
