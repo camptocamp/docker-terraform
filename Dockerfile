@@ -1,4 +1,4 @@
-FROM centos:7
+FROM debian:9
 
 ENV \
 	GOPASS_VERSION=1.8.3 \
@@ -6,9 +6,11 @@ ENV \
 	TERRAFORM_VERSION=0.11.11 \
 	SUMMON_PROVIDER=/usr/local/bin/summon-gopass
 
-RUN yum -y install git unzip wget && \
-	yum clean all && \
-	rm -rf /var/cache/yum
+RUN apt-get update && apt-get install -y \
+	git \
+	unzip \
+	wget \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Install gopass
 RUN wget https://github.com/gopasspw/gopass/releases/download/v${GOPASS_VERSION}/gopass-${GOPASS_VERSION}-linux-amd64.tar.gz -qO - | tar xz gopass-${GOPASS_VERSION}-linux-amd64/gopass -O > /usr/local/bin/gopass
