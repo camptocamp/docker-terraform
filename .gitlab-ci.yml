@@ -6,7 +6,7 @@ stages:
   - build
   - push
 
-before_scripts:
+before_script:
   - docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 
 build_image:
