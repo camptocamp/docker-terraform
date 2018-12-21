@@ -6,13 +6,15 @@ stages:
   - build
   - push
 
+before_scripts:
+  - docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
+
 build_image:
   stage: build
   script:
-    - docker build -t mcanevet/terraform:latest .
+    - sudo docker build -t mcanevet/terraform:latest .
 
 push_image:
   stage: push
   script:
-    - docker login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
     - docker push mcanevet/terraform:latest
