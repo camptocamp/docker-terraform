@@ -1,6 +1,7 @@
 FROM debian:9
 
 ENV \
+	HOME=/home/terraform \
 	GOPASS_VERSION=1.8.3 \
 	SUMMON_VERSION=0.6.9 \
 	TERRAFORM_VERSION=0.11.11 \
@@ -25,9 +26,12 @@ RUN chmod +x /usr/local/bin/summon
 RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O - | funzip > /usr/local/bin/terraform
 RUN chmod +x /usr/local/bin/terraform
 
+# Create home dir
+RUN mkdir -p $HOME && chown 1001:0 $HOME && chmod g=u $HOME
+
 # Install plugins
-RUN mkdir -p /.terraform.d/plugins
-RUN echo plugin_cache_dir = "$HOME/.terraform.d/plugin-cache" > /.terraformrc
+RUN mkdir -p $HOME/.terraform.d/plugins
+RUN echo plugin_cache_dir = "$HOME/.terraform.d/plugin-cache" > $HOME/.terraformrc
 
 COPY summon-gopass /usr/local/bin/summon-gopass
 
