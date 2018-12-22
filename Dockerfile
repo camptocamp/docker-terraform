@@ -31,7 +31,7 @@ RUN mkdir -p $HOME && chown 1001:0 $HOME && chmod g=u $HOME
 
 # Install plugins
 RUN mkdir -p $HOME/.terraform.d/plugins
-RUN echo plugin_cache_dir = "$HOME/.terraform.d/plugin-cache" > $HOME/.terraformrc
+RUN echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > /.terraformrc
 
 COPY summon-gopass /usr/local/bin/summon-gopass
 
