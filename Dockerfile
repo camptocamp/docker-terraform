@@ -41,6 +41,8 @@ RUN chmod +x $HOME/.terraform.d/plugins/*
 # Configure plugin cache
 RUN echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > /.terraformrc
 
+RUN chown 1001:0 -R $HOME/.terraform.d
+
 COPY summon-gopass /usr/local/bin/summon-gopass
 
 USER 1001
