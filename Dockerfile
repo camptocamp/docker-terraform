@@ -1,4 +1,4 @@
-FROM debian:9
+FROM debian:9 as downloader
 
 ENV \
 	HOME=/home/terraform \
@@ -26,8 +26,42 @@ RUN chmod +x /usr/local/bin/summon
 RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O - | funzip > /usr/local/bin/terraform
 RUN chmod +x /usr/local/bin/terraform
 
+# Install terraform-inventory
+RUN wget https://github.com/adammck/terraform-inventory/releases/download/v0.8/terraform-inventory_v0.8_linux_amd64.zip -O - | funzip > /usr/local/bin/terraform-inventory
+RUN chmod +x /usr/local/bin/terraform-inventory
+
+FROM debian:9
+
+ENV \
+	HOME=/home/terraform \
+	SUMMON_PROVIDER=/usr/local/bin/summon-gopass
+
+RUN apt-get update && apt-get install -y \
+	git \
+	wget \
+	gpg \
+	&& rm -rf /var/lib/apt/lists/*
+
+COPY --from=downloader /usr/local/bin/gopass /usr/local/bin/gopass
+COPY --from=downloader /usr/local/bin/summon /usr/local/bin/summon
+COPY --from=downloader /usr/local/bin/terraform /usr/local/bin/terraform
+COPY --from=downloader /usr/local/bin/terraform-inventory /usr/local/bin/terraform-inventory
+
+# Install ansible
+RUN wget http://ppa.launchpad.net/ansible/ansible/ubuntu/pool/main/a/ansible/ansible_2.7.9-1ppa~trusty_all.deb -O ansible.deb \
+	&& dpkg -i ansible.deb; apt-get install -f -y \
+	&& rm ansible.deb
+
 # Create home dir
 RUN mkdir -p $HOME && chown 1001:0 -R $HOME && chmod g=u -R $HOME
+
+# Install plugins
+RUN mkdir -p $HOME/.terraform.d/plugins
+
+# Configure plugin cache
+RUN echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > /.terraformrc
+
+RUN chown 1001:0 -R $HOME/.terraform.d
 
 COPY summon-gopass /usr/local/bin/summon-gopass
 
