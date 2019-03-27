@@ -1,11 +1,9 @@
 FROM debian:9 as downloader
 
 ENV \
-	HOME=/home/terraform \
 	GOPASS_VERSION=1.8.3 \
 	SUMMON_VERSION=0.6.9 \
-	TERRAFORM_VERSION=0.11.13 \
-	SUMMON_PROVIDER=/usr/local/bin/summon-gopass
+	TERRAFORM_VERSION=0.11.13
 
 RUN apt-get update && apt-get install -y \
 	git \
