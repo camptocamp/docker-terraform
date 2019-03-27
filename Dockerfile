@@ -27,21 +27,7 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform
 RUN chmod +x /usr/local/bin/terraform
 
 # Create home dir
-RUN mkdir -p $HOME && chown 1001:0 $HOME && chmod g=u $HOME
-
-# Install plugins
-RUN mkdir -p $HOME/.terraform.d/plugins
-
-# Get gitlab provider
-RUN wget https://github.com/mcanevet/terraform-provider-gitlab/releases/download/v1.1.0%2Bpr-68%2Bpr-72%2Bpr-83/terraform-provider-gitlab_v1.1.1 -O $HOME/.terraform.d/plugins/terraform-provider-gitlab_v1.1.1
-
-# Set all plugins executable
-RUN chmod +x $HOME/.terraform.d/plugins/*
-
-# Configure plugin cache
-RUN echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > /.terraformrc
-
-RUN chown 1001:0 -R $HOME/.terraform.d
+RUN mkdir -p $HOME && chown 1001:0 -R $HOME && chmod g=u -R $HOME
 
 COPY summon-gopass /usr/local/bin/summon-gopass
 
