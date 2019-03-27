@@ -4,7 +4,7 @@ ENV \
 	HOME=/home/terraform \
 	GOPASS_VERSION=1.8.3 \
 	SUMMON_VERSION=0.6.9 \
-	TERRAFORM_VERSION=0.11.11 \
+	TERRAFORM_VERSION=0.11.13 \
 	SUMMON_PROVIDER=/usr/local/bin/summon-gopass
 
 RUN apt-get update && apt-get install -y \
