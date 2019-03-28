@@ -36,8 +36,9 @@ ENV \
 
 RUN apt-get update && apt-get install -y \
 	git \
-	wget \
 	gpg \
+	unzip \
+	wget \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY --from=downloader /usr/local/bin/gopass /usr/local/bin/gopass
