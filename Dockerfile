@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y \
 	gpg \
 	unzip \
 	wget \
+	libnss-wrapper \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY --from=downloader /usr/local/bin/gopass /usr/local/bin/gopass
