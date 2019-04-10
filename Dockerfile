@@ -40,17 +40,13 @@ RUN apt-get update && apt-get install -y \
 	unzip \
 	wget \
 	libnss-wrapper \
+	ansible \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY --from=downloader /usr/local/bin/gopass /usr/local/bin/gopass
 COPY --from=downloader /usr/local/bin/summon /usr/local/bin/summon
 COPY --from=downloader /usr/local/bin/terraform /usr/local/bin/terraform
 COPY --from=downloader /usr/local/bin/terraform-inventory /usr/local/bin/terraform-inventory
-
-# Install ansible
-RUN wget http://ppa.launchpad.net/ansible/ansible/ubuntu/pool/main/a/ansible/ansible_2.7.9-1ppa~trusty_all.deb -O ansible.deb \
-	&& dpkg -i ansible.deb; apt-get install -f -y \
-	&& rm ansible.deb
 
 # Create home dir
 RUN mkdir -p $HOME && chown 1001:0 -R $HOME && chmod g=u -R $HOME
