@@ -1,4 +1,4 @@
-FROM debian:9 as downloader
+FROM debian:buster as downloader
 
 ENV \
 	GOPASS_VERSION=1.8.3 \
@@ -28,7 +28,7 @@ RUN chmod +x /usr/local/bin/terraform
 RUN wget https://github.com/adammck/terraform-inventory/releases/download/v0.8/terraform-inventory_v0.8_linux_amd64.zip -O - | funzip > /usr/local/bin/terraform-inventory
 RUN chmod +x /usr/local/bin/terraform-inventory
 
-FROM debian:9
+FROM debian:buster
 
 ENV \
 	HOME=/home/terraform \
