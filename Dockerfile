@@ -3,7 +3,7 @@ FROM debian:buster as downloader
 ENV \
 	GOPASS_VERSION=1.8.3 \
 	SUMMON_VERSION=0.6.9 \
-	TERRAFORM_VERSION=0.11.13
+	TERRAFORM_VERSION=0.11.14
 
 RUN apt-get update && apt-get install -y \
 	git \
