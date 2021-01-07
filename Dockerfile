@@ -1,4 +1,4 @@
-FROM hashicorp/terraform:0.13.5 AS build-nss-wrapper
+FROM hashicorp/terraform:0.13.6 AS build-nss-wrapper
 
 RUN apk add cmake gcc make musl-nscd-dev libc-dev curl-dev jansson-dev
 RUN git clone git://git.samba.org/nss_wrapper.git
@@ -10,7 +10,7 @@ RUN cd nss_wrapper \
 	&& make
 RUN find / -name libnss_wrapper.so
 
-FROM hashicorp/terraform:0.13.5
+FROM hashicorp/terraform:0.13.6
 
 ENV \
 	GOPASS_VERSION=1.8.3 \
