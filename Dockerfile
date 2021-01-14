@@ -18,7 +18,7 @@ ENV \
 	SUMMON_VERSION=0.8.3 \
 	TERRAFORM_PROVISIONER_ANSIBLE_VERSION=2.5.0
 
-RUN apk add jq gnupg bash
+RUN apk add jq gnupg bash ansible
 
 # Install gopass
 RUN wget https://github.com/gopasspw/gopass/releases/download/v${GOPASS_VERSION}/gopass-${GOPASS_VERSION}-linux-amd64.tar.gz -qO - | \
