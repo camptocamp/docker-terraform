@@ -1,5 +1,5 @@
-ARG REPO
-FROM hashicorp/${REPO} AS build-nss-wrapper
+FROM hashicorp/terraform:0.13.6 AS build-nss-wrapper
+
 RUN apk add cmake gcc make musl-nscd-dev libc-dev curl-dev jansson-dev
 RUN git clone git://git.samba.org/nss_wrapper.git
 RUN cd nss_wrapper \
@@ -10,30 +10,26 @@ RUN cd nss_wrapper \
         && make
 RUN find / -name libnss_wrapper.so
 
-ARG REPO
-FROM hashicorp/${REPO}
+FROM hashicorp/terraform:0.13.6
 
-# Versions are manually set inside this Dockerfile for the moment!
-ENV GOPASS_VERSION=1.8.3 \
-    SUMMON_PROVIDER=/usr/local/bin/summon-gopass \
-    SUMMON_VERSION=0.8.3 \
-    TERRAFORM_PROVISIONER_ANSIBLE_VERSION=2.5.0
+ENV \
+        GOPASS_VERSION=1.8.3 \
+        SUMMON_PROVIDER=/usr/local/bin/summon-gopass \
+        SUMMON_VERSION=0.8.3 \
+        TERRAFORM_PROVISIONER_ANSIBLE_VERSION=2.5.0
 
 RUN apk add jq gnupg bash ansible
 
 # Install gopass
-RUN wget https://github.com/gopasspw/gopass/releases/download/v${GOPASS_VERSION}/gopass-${GOPASS_VERSION}-linux-amd64.tar.gz
-RUN tar -zxvf gopass-${GOPASS_VERSION}-linux-amd64.tar.gz gopass-${GOPASS_VERSION}-linux-amd64/gopass -O > /usr/local/bin/gopass
+RUN wget https://github.com/gopasspw/gopass/releases/download/v${GOPASS_VERSION}/gopass-${GOPASS_VERSION}-linux-amd64.tar.gz -qO - | \
+        tar xz gopass-${GOPASS_VERSION}-linux-amd64/gopass -O > /usr/local/bin/gopass
 RUN chmod +x /usr/local/bin/gopass
-RUN rm gopass-${GOPASS_VERSION}-linux-amd64.tar.gz
 
 # Install summon
-RUN wget https://github.com/cyberark/summon/releases/download/v${SUMMON_VERSION}/summon-linux-amd64.tar.gz
-RUN tar -zxvf summon-linux-amd64.tar.gz summon -O > /usr/local/bin/summon
+RUN wget https://github.com/cyberark/summon/releases/download/v${SUMMON_VERSION}/summon-linux-amd64.tar.gz -qO - | \
+        tar xz summon -O > /usr/local/bin/summon
 RUN chmod +x /usr/local/bin/summon
-RUN rm summon-linux-amd64.tar.gz
 
-# Mohamed: maybe in a separate Dockerfile using the first part as base
 # Install Terraform Ansible provisioner
 RUN mkdir -p x /tmp/.terraform.d/plugins \
         && chgrp 0 -R /tmp/.terraform.d \
