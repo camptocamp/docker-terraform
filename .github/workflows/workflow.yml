@@ -1,0 +1,40 @@
+name: Docker repo update
+
+on:
+  # Manual trigger used the first time to populate the destination repo, comment once repo up-to-date
+  workflow_dispatch:
+
+  # Daily workflow executions
+  # Uncomment schedule block once repo up-to-date
+  #schedule:
+  #- cron: '0 0 * * *'
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Update APT package index
+      run: sudo apt update
+
+    - name: Install jq
+      run: sudo apt install jq
+
+    - name: Login to Dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Set execute permission
+      run: sudo chmod +x update.sh
+
+    - name: Execute script
+      run: ./update.sh
+      env:
+        uname: ${{ secrets.DOCKERHUB_USERNAME }}
+        upass: ${{ secrets.DOCKERHUB_PASSWORD }}
+        # Replace with actual destination repo
+        dest_repo: 'change-me/terraform'
