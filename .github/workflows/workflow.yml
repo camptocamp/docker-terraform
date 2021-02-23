@@ -1,0 +1,36 @@
+name: Docker repo update
+
+on:
+  # Manual trigger used the first time to populate the destination repo, comment once repo up-to-date
+  workflow_dispatch:
+
+  # Daily workflow executions
+  # Uncomment schedule block once repo up-to-date
+  #schedule:
+  #- cron: '0 0 * * *'
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Update APT package index
+      run: sudo apt update
+
+    - name: Install jq
+      run: sudo apt install jq
+
+    - name: Login to Dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.dockerhub_username }}
+        password: ${{ secrets.dockerhub_password }}
+
+    - name: Execute script
+      run: ./update.sh
+      env:
+        uname: ${{ secrets.dockerhub_username }}
+        upass: ${{ secrets.dockerhub_password }}
+        dest_repo: ${{ secrets.dockerhub_repo }}
