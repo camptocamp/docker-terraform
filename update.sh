@@ -2,27 +2,35 @@
 
 set -e
 
-# Get token
-token=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'${uname}'", "password": "'${upass}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-
-# Retrieve list of all tags from repo hashicorp/terraform
-source_tags=$(curl -s -H "Authorization: JWT ${token}" https://hub.docker.com/v2/repositories/hashicorp/terraform/tags/?page_size=100 | jq -r '.results|.[]|.name')
-
-# Get list of tags from destination repo
-dest_tags=$(curl -s -H "Authorization: JWT ${token}" https://hub.docker.com/v2/repositories/${dest_repo}/tags/?page_size=100 | jq -r '.results|.[]|.name')
-
-# Get list of new tags
-new_tags=$(echo ${source_tags[@]} ${dest_tags[@]} | tr ' ' '\n' | sort -V | uniq -u)
-
-# Comment this to get tags prior to 0.13.0 - first sync
-new_tags=$(echo ${new_tags[@]/0.12.30//} | cut -d/ -f2)
-
-# Build new images only if there are new tags
-if [ ! -z "$new_tags" ]
-then
-        for j in ${new_tags}
+# get the list of tags from a repo - usage: get_tags <token> <repo>
+get_tags () {
+        local i=1
+        local tags=''
+        local page=$(curl -s -H "Authorization: JWT $1" "https://hub.docker.com/v2/repositories/$2/tags/?page=$i&page_size=100" | jq -r '.results|.[]|.name')
+        while [ -n "$page" ]
         do
-                docker build --build-arg TAG="${j}" -t ${dest_repo}:${j} .
-                docker push ${dest_repo}:${j}
+                tags="$tags $page"
+                ((i++))
+                page=$(curl -s -H "Authorization: JWT $1" "https://hub.docker.com/v2/repositories/$2/tags/?page=$i&page_size=100" | jq -r '.results|.[]|.name')
+        done
+        echo $tags
+}
+
+# get token
+token=$(curl -s -H 'Content-Type: application/json' -X POST -d '{"username": "'$uname'", "password": "'$upass'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+
+# get list of new tags
+new_tags=$(echo $(get_tags $token 'hashicorp/terraform') $(get_tags $token $dest_repo) | tr ' ' '\n' | sort -V | uniq -u)
+
+# uncomment this if tags prior to 0.13.0 must be ignored - first sync
+new_tags=$(echo ${new_tags/0.12.30//} | cut -d/ -f2)
+
+# build new images only if there are new tags
+if [ -n "$new_tags" ]
+then
+        for j in $new_tags
+        do
+                docker build --build-arg TAG=$j -t $dest_repo:$j .
+                docker push $dest_repo:$j
         done
 fi

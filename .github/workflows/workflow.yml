@@ -28,9 +28,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Set execute permission
-      run: sudo chmod +x update.sh
-
     - name: Execute script
       run: ./update.sh
       env:
