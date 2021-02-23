@@ -25,13 +25,12 @@ jobs:
     - name: Login to Dockerhub
       uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        username: ${{ secrets.dockerhub_username }}
+        password: ${{ secrets.dockerhub_password }}
 
     - name: Execute script
       run: ./update.sh
       env:
-        uname: ${{ secrets.DOCKERHUB_USERNAME }}
-        upass: ${{ secrets.DOCKERHUB_PASSWORD }}
-        # Replace with actual destination repo
-        dest_repo: 'change-me/terraform'
+        uname: ${{ secrets.dockerhub_username }}
+        upass: ${{ secrets.dockerhub_password }}
+        dest_repo: ${{ secrets.dockerhub_repo }}
