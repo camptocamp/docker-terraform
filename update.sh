@@ -26,11 +26,8 @@ new_tags=$(echo $(get_tags $token 'hashicorp/terraform') $(get_tags $token $dest
 new_tags=$(echo ${new_tags/0.12.30//} | cut -d/ -f2)
 
 # Build new images only if there are new tags
-if [ -n "$new_tags" ]
-then
-        for j in $new_tags
-        do
-                docker build --build-arg TAG=$j -t $dest_repo:$j .
-                docker push $dest_repo:$j
-        done
-fi
+for j in $new_tags
+do
+	docker build --build-arg TAG=$j -t $dest_repo:$j .
+        docker push $dest_repo:$j
+done
