@@ -1,7 +1,6 @@
 name: Docker repo update
 
 on:
-  # Manual trigger used the first time to populate the destination repo, comment once repo up-to-date
   workflow_dispatch:
 
 jobs:

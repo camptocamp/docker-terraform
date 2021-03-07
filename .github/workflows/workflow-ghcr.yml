@@ -1,13 +1,11 @@
-name: Docker repo update
+name: Github container repo update
 
 on:
-  # Manual trigger used the first time to populate the destination repo, comment once repo up-to-date
-  workflow_dispatch:
+  #workflow_dispatch:
 
   # Daily workflow executions
-  # Uncomment schedule block once repo up-to-date
-  #schedule:
-  #- cron: '0 0 * * *'
+  schedule:
+  - cron: '0 0 * * *'
 
 jobs:
   update-repo:
@@ -22,7 +20,7 @@ jobs:
     - name: Install jq
       run: sudo apt install jq
 
-    - name: Login to Dockerhub
+    - name: Login to registry
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
