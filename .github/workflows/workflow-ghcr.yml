@@ -1,0 +1,33 @@
+name: Github container repo update
+
+on:
+  #workflow_dispatch:
+
+  # Daily workflow executions
+  schedule:
+  - cron: '0 0 * * *'
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Update APT package index
+      run: sudo apt update
+
+    - name: Install jq
+      run: sudo apt install jq
+
+    - name: Login to registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.username }}
+        password: ${{ secrets.token }}
+
+    - name: Execute script
+      run: ./update.sh
+      env:
+        github_pat: ${{ secrets.token }}
