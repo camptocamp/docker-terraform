@@ -26,9 +26,10 @@ get_tags_ghcr () {
 	local tags=$(curl -H "Authorization: OAuth $1" -s "https://ghcr.io/v2/$2/tags/list")
 	if [[ $tags == *"NAME_UNKNOWN"* ]]
        	then
-		tags=''
+		echo ''
+	else
+		echo $tags | jq -r '.tags[]'
 	fi
-	echo $tags
 }
 
 ########################################################
