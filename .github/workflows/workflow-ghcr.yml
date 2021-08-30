@@ -1,7 +1,7 @@
 name: Github container repo update
 
 on:
-  #workflow_dispatch:
+  workflow_dispatch:
 
   # Daily workflow executions
   schedule:
