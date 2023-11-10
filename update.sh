@@ -33,11 +33,11 @@ get_tags_ghcr () {
 }
 
 ########################################################
-# From 'hashicorp/terraform' to 'camptocamp/terraform' #
+# From 'hashicorp/terraform' to 'camptocamp/docker-terraform' #
 ########################################################
 
 # Get list of new tags
-new_tags=$(echo $(get_tags_dhub 'hashicorp/terraform') $(get_tags_ghcr $github_pat 'camptocamp/terraform') $(get_tags_ghcr $github_pat 'camptocamp/terraform') | tr ' ' '\n' | sort -V | uniq -u)
+new_tags=$(echo $(get_tags_dhub 'hashicorp/terraform') $(get_tags_ghcr $github_pat 'camptocamp/docker-terraform') $(get_tags_ghcr $github_pat 'camptocamp/docker-terraform') | tr ' ' '\n' | sort -V | uniq -u)
 
 # Build from 0.13.0 forward
 new_tags=$(echo ${new_tags/0.12.30//} | cut -d/ -f2)
@@ -45,6 +45,6 @@ new_tags=$(echo ${new_tags/0.12.30//} | cut -d/ -f2)
 # Build new images only if there are new tags
 for j in $new_tags
 do
-	docker build --build-arg TAG=$j -t 'ghcr.io/camptocamp/terraform':$j .
-        docker push 'ghcr.io/camptocamp/terraform':$j
+	docker build --build-arg TAG=$j -t 'ghcr.io/camptocamp/docker-terraform':$j .
+        docker push 'ghcr.io/camptocamp/docker-terraform':$j
 done
