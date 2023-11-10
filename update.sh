@@ -39,8 +39,8 @@ get_tags_ghcr () {
 # Get list of new tags
 new_tags=$(echo $(get_tags_dhub 'hashicorp/terraform') $(get_tags_ghcr $github_pat 'camptocamp/docker-terraform') $(get_tags_ghcr $github_pat 'camptocamp/docker-terraform') | tr ' ' '\n' | sort -V | uniq -u)
 
-# Build from 0.13.0 forward
-new_tags=$(echo ${new_tags/0.12.30//} | cut -d/ -f2)
+# Build from 1.6.1 forward
+new_tags=$(echo ${new_tags/1.6.1//} | cut -d/ -f2)
 
 # Build new images only if there are new tags
 for j in $new_tags
